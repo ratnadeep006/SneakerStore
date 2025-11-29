@@ -1,0 +1,180 @@
+<!-- Complete, well-commented HTML for SneakerStore — Final Version -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SneakerStore — Premium Athletic Footwear</title>
+
+  <!-- Link to external stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+  <!--
+    NAVBAR
+    - Logo on the left (click shows all products)
+    - Category links (All / Men / Women / Kids) — they filter products using JS
+    - Mobile menu icon (visible on small screens) — toggles .nav-links
+    - Cart icon shows current item count and opens cart sidebar
+    - Added wishlist icon for optional feature
+  -->
+  <nav>
+    <div class="nav-container container">
+      <div class="logo" onclick="filterCategory('all')" aria-label="Go to home">SneakerStore</div>
+
+      <!-- Navigation links (hidden on small screens via CSS) -->
+      <div class="nav-links" role="navigation" aria-label="Main">
+        <a href="#products" onclick="filterCategory('all')">All</a>
+        <a href="#products" onclick="filterCategory('men')">Men</a>
+        <a href="#products" onclick="filterCategory('women')">Women</a>
+        <a href="#products" onclick="filterCategory('kids')">Kids</a>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button class="mobile-menu" aria-label="Toggle menu" onclick="toggleMenu()">☰</button>
+
+      <!-- Cart and Wishlist icons -->
+      <div class="nav-icons">
+        <button class="wishlist-icon" aria-label="View wishlist" onclick="toggleWishlist()">❤️ <span class="wishlist-count" aria-live="polite">0</span></button>
+        <button class="cart-icon" aria-label="Open cart" onclick="toggleCart()">
+          🛒 <span class="cart-count" aria-live="polite">0</span>
+        </button>
+        <button onclick="toggleDarkMode()">Dark Mode</button>
+      </div>
+    </div>
+  </nav>
+
+  <!--
+    HERO SECTION
+    - Prominent headline, subhead and CTA (Shop Now)
+    - Background image set via CSS for better performance and responsiveness
+  -->
+  <header class="hero">
+    <div class="hero-content container">
+      <h1>Step Into Style</h1>
+      <p>Discover our latest collection of premium sneakers</p>
+      <button class="cta-button" onclick="(filterCategory('all'), scrollToProducts())">Shop Now</button>
+    </div>
+  </header>
+
+  <!--
+    PRODUCTS SECTION
+    - Two-column layout: sidebar (filters) + product grid
+    - productGrid is populated by JavaScript
+  -->
+  <main>
+    <section id="products" class="products">
+      <div class="container">
+        <h2>Our Collection</h2>
+
+        <div class="shop-layout">
+
+          <!-- SIDEBAR: filters and search (price range at top) -->
+          <aside class="sidebar" aria-label="Filters">
+            <!-- Price filter: range input; label shows current value (at top) -->
+            <div class="filter-group">
+              <h3>Filter by Price</h3>
+              <label for="priceRange" class="sr-only">Maximum price</label>
+              <input type="range" id="priceRange" min="0" max="20000" step="500" value="20000" oninput="onPriceInput(event)">
+              <p>Max Price:₹<span id="priceDisplay">20000</span></p>
+            </div>
+
+            <!-- Search: filters products by name -->
+            <div class="filter-group">
+              <h3>Search</h3>
+              <label for="searchInput" class="sr-only">Search products</label>
+              <input type="search" id="searchInput" placeholder="Search products..." oninput="onSearchInput(event)">
+            </div>
+
+            <!-- Clear Filters button -->
+            <div class="filter-group">
+              <button class="clear-filters" onclick="clearFilters()">Clear All Filters</button>
+            </div>
+
+            <!-- Optional future filters (size, color) can be placed here -->
+            <div class="filter-group" aria-hidden="true" style="display:none;">
+              <h3>Other filters</h3>
+              <p>Coming soon — size, color, brand...</p>
+            </div>
+          </aside>
+
+          <!-- PRODUCT GRID: JavaScript will inject product cards here -->
+          <div id="productGrid" class="product-grid" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!--
+    CART SIDEBAR
+    - Hidden by default (moved off-screen by CSS); toggled by .open class
+    - Contains list of items, quantity controls and total
+  -->
+  <aside id="cartSidebar" class="cart-sidebar" aria-label="Shopping cart">
+    <div class="cart-header">
+      <h2>Your Cart</h2>
+      <button class="close-cart" onclick="toggleCart()" aria-label="Close cart">×</button>
+    </div>
+
+    <!-- Items will be injected here by JS -->
+    <div id="cartItems" class="cart-items"></div>
+
+    <div class="cart-total">
+      <h3>Total: ₹<span id="cartTotal">0.00</span></h3>
+      <button class="checkout-button" onclick="alert('Checkout is not implemented in this demo')">Checkout</button>
+    </div>
+  </aside>
+
+  <!--
+    WISHLIST SIDEBAR (new optional feature)
+    - Similar to cart, for saved items
+  -->
+  <aside id="wishlistSidebar" class="wishlist-sidebar" aria-label="Wishlist">
+    <div class="wishlist-header">
+      <h2>Your Wishlist</h2>
+      <button class="close-wishlist" onclick="toggleWishlist()" aria-label="Close wishlist">×</button>
+    </div>
+    <div id="wishlistItems" class="wishlist-items"></div>
+  </aside>
+
+  <!--
+    FOOTER (added newsletter signup)
+  -->
+  <footer>
+    <div class="footer-content container">
+      <div class="footer-section">
+        <h3>About Us</h3>
+        <ul>
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Careers</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h3>Contact</h3>
+        <ul>
+          <li><a href="#">Email Us</a></li>
+          <li><a href="#">Store Location</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h3>Newsletter</h3>
+        <form class="newsletter">
+          <input type="email" placeholder="Enter your email" required>
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Accessibility helper: screen-reader-only class -->
+  <style>
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  </style>
+
+  <!-- Link to JavaScript file -->
+  <script src="script.js" defer></script>
+</body>
+</html>
