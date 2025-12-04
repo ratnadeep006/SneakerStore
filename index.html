@@ -40,7 +40,18 @@
         <button class="cart-icon" aria-label="Open cart" onclick="toggleCart()">
           🛒 <span class="cart-count" aria-live="polite">0</span>
         </button>
-        <button onclick="toggleDarkMode()">Dark Mode</button>
+        <button class="theme-icon" onclick="toggleDarkMode(this)">🌙</button>
+        <button id="signinBtn" class="signin-button" aria-label="Sign In" onclick="openSignin()">Sign In</button>
+
+        <!-- User avatar shown when signed in -->
+        <div id="userContainer" class="user-container hidden" aria-hidden="true">
+          <button id="userAvatar" class="user-avatar" aria-haspopup="true" aria-expanded="false" onclick="toggleUserMenu()">🙍🏻‍♂️</button>
+          <div id="userMenu" class="user-menu" role="menu" aria-hidden="true">
+            <div class="user-name" id="userName">Demo User</div>
+            <hr/>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
@@ -122,7 +133,10 @@
 
     <div class="cart-total">
       <h3>Total: ₹<span id="cartTotal">0.00</span></h3>
-      <button class="checkout-button" onclick="alert('Checkout is not implemented in this demo')">Checkout</button>
+      <!-- Button shown when user is signed in -->
+      <button id="checkoutBtn" class="checkout-button" onclick="checkout()">Checkout</button>
+      <!-- Button shown when user is not signed in; opens sign-in modal -->
+      <button id="loginCheckoutBtn" class="checkout-button" onclick="openSignin()">Login to Checkout</button>
     </div>
   </aside>
 
@@ -168,6 +182,25 @@
       </div>
     </div>
   </footer>
+
+  <!-- Sign In Modal -->
+  <div id="signinModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="signinTitle">
+    <div class="modal-overlay" onclick="closeSignin()"></div>
+    <div class="modal-content" role="document">
+      <button class="modal-close" aria-label="Close" onclick="closeSignin()">×</button>
+      <h2 id="signinTitle">Sign In</h2>
+      <form id="signinForm" onsubmit="handleSignin(event)">
+        <label for="signinUser">User ID</label>
+        <input id="signinUser" type="text" required placeholder="Enter user id">
+
+        <label for="signinPass">Password</label>
+        <input id="signinPass" type="password" required placeholder="Enter password">
+
+        <button type="submit" class="cta-button" style="padding-top: 4px;border-radius: 6px;padding-bottom: 4px;padding-right: 10px;padding-left: 10px;font-size: small;">Sign In</button>
+      </form>
+      <p class="signin-note">Demo credentials — user: <strong>demo@user.com</strong> / pass: <strong>demo123</strong></p>
+    </div>
+  </div>
 
   <!-- Accessibility helper: screen-reader-only class -->
   <style>
