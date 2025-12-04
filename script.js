@@ -428,7 +428,7 @@ function renderWishlist() {
     div.className = "wishlist-item";
     div.innerHTML = `
             <img src="${item.image}" alt="${item.name}">
-            <div>
+            <div class="wishlist-controls">
                 <h4>${item.name}</h4>
                 <p>₹${item.price}</p>
                 <button onclick="addToCart(${item.id})">Add to Cart</button>
@@ -484,8 +484,9 @@ function toggleMenu() {
 // --------------------------------------
 // DARK MODE TOGGLE
 // --------------------------------------
-function toggleDarkMode() {
+function toggleDarkMode(button) {
   document.body.classList.toggle("dark");
+  button.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
 }
 
 // --------------------------------------
@@ -496,10 +497,113 @@ function scrollToProducts() {
 }
 
 // --------------------------------------
+// SIGNIN MODAL HANDLERS (hardcoded demo credentials)
+// --------------------------------------
+function openSignin() {
+  const modal = document.getElementById('signinModal');
+  modal.setAttribute('aria-hidden', 'false');
+}
+
+function closeSignin() {
+  const modal = document.getElementById('signinModal');
+  modal.setAttribute('aria-hidden', 'true');
+}
+
+function handleSignin(event) {
+  event.preventDefault();
+  const user = document.getElementById('signinUser').value.trim();
+  const pass = document.getElementById('signinPass').value;
+
+  // Hardcoded demo credentials
+  const demoUser = 'demo@user.com';
+  const demoPass = 'demo123';
+
+  if (user === demoUser && pass === demoPass) {
+    // Persist signed-in user
+    const userObj = { id: demoUser, name: 'Demo User' };
+    localStorage.setItem('signedInUser', JSON.stringify(userObj));
+
+    // Update UI
+    applySignedInState(userObj);
+    alert('Signed in successfully as ' + userObj.name);
+    closeSignin();
+  } else {
+    alert('Invalid credentials. Use demo@user.com / demo123');
+  }
+}
+
+function checkout() {
+  const signed = JSON.parse(localStorage.getItem('signedInUser'));
+  if (!signed) {
+    openSignin();
+    return;
+  }
+  alert('Checkout is not implemented in this demo. Proceeding as ' + (signed.name || signed.id));
+}
+
+function applySignedInState(userObj) {
+  // hide sign in button
+  const signinBtn = document.getElementById('signinBtn');
+  const userContainer = document.getElementById('userContainer');
+  const userName = document.getElementById('userName');
+  const checkoutBtn = document.getElementById('checkoutBtn');
+  const loginCheckoutBtn = document.getElementById('loginCheckoutBtn');
+  if (signinBtn) signinBtn.classList.add('hidden');
+  if (userContainer) {
+    userContainer.classList.remove('hidden');
+    userContainer.setAttribute('aria-hidden', 'false');
+    userName.textContent = userObj.name || userObj.id;
+  }
+  if (checkoutBtn) checkoutBtn.classList.remove('hidden');
+  if (loginCheckoutBtn) loginCheckoutBtn.classList.add('hidden');
+}
+
+function applySignedOutState() {
+  const signinBtn = document.getElementById('signinBtn');
+  const userContainer = document.getElementById('userContainer');
+  const userMenu = document.getElementById('userMenu');
+  const checkoutBtn = document.getElementById('checkoutBtn');
+  const loginCheckoutBtn = document.getElementById('loginCheckoutBtn');
+  if (signinBtn) signinBtn.classList.remove('hidden');
+  if (userContainer) {
+    userContainer.classList.add('hidden');
+    userContainer.setAttribute('aria-hidden', 'true');
+  }
+  if (userMenu) {
+    userMenu.setAttribute('aria-hidden', 'true');
+    document.getElementById('userAvatar').setAttribute('aria-expanded', 'false');
+  }
+  if (checkoutBtn) checkoutBtn.classList.add('hidden');
+  if (loginCheckoutBtn) loginCheckoutBtn.classList.remove('hidden');
+}
+
+function toggleUserMenu() {
+  const userMenu = document.getElementById('userMenu');
+  const avatar = document.getElementById('userAvatar');
+  if (!userMenu) return;
+  const isHidden = userMenu.getAttribute('aria-hidden') === 'true';
+  userMenu.setAttribute('aria-hidden', isHidden ? 'false' : 'true');
+  avatar.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+}
+
+function logout() {
+  localStorage.removeItem('signedInUser');
+  applySignedOutState();
+  alert('You have been logged out');
+}
+
+// --------------------------------------
 // INITIAL LOAD
 // --------------------------------------
 window.onload = () => {
   renderProducts();
   updateCart();
   updateWishlistCount();
+
+  const signed = JSON.parse(localStorage.getItem('signedInUser'));
+  if (signed) {
+    applySignedInState(signed);
+  } else {
+    applySignedOutState();
+  }
 };
